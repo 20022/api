@@ -1,22 +1,18 @@
 const marked = require("marked")
 const path = require("path")
 const fs = require("fs")
-const memoize = require("lodash.memoize")
 
-const getStaticPath = (filename) => path.join(__dirname, `./static/${filename}`)
-const getContents = (filename) => fs.readFileSync(getStaticPath(filename)).toString()
-
-const render = (filename) => {
-  return `
+const readmePath = path.join(__dirname, `../readme.md`)
+const readme = fs.readFileSync(readmePath).toString()
+const html = `
   <!doctype html>
   <html>
     <head>
     </head>
     <body>
-      ${marked(getContents(filename))}
+      ${marked(readme)}
     </body>
   </html>
   `
-}
-
-module.exports = memoize(render)
+  
+module.exports = html

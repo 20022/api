@@ -1,7 +1,7 @@
 const express = require("express")
 const path = require("path")
 
-const render = require("./render")
+const readme = require("./render")
 const handlerPromise = require("./db-handlers")
 const app = express()
 
@@ -32,7 +32,7 @@ handlerPromise.then((handlers) => {
   })
 
   app.get("/", (req, res) => {
-    res.send(render("home.md"))
+    res.send(readme)
   })
 
   app.listen(3000, () => {
