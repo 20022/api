@@ -1,9 +1,14 @@
 const express = require("express")
 const path = require("path")
+const cors = require("cors")
+const compression = require("compression")
 
 const readme = require("./render")
 const handlerPromise = require("./db-handlers")
 const app = express()
+
+app.use(cors())
+app.use(compression())
 
 const handleResponse = (res, promise) => {
   promise
