@@ -42,14 +42,29 @@ const getIdFields = R.curry((collection, doc) => {
     R.omit(["xmi:id"]),
     Promise.resolve.bind(Promise)
   )(doc)
+})
 
+const getIdFieldsEnvelope = R.curry((collection, doc) => {
+  return R.composeP(
+    R.assoc("_related", R.__, doc),
+    (query) => collection.find(query).toArray(),
+    R.assocPath(["xmi:id", "$in"], R.__, {}),
+    R.flatten,
+    R.values,
+    R.map(R.split(" ")),
+    R.filter((val) => val[0] === "_"),
+    R.omit(["xmi:id"]),
+    Promise.resolve.bind(Promise)
+  )(doc)
 })
 
 const getFull = R.curry((collection, id) => {
   return byId(collection, id).then(getIdFields(collection))
 })
 
-
+const getFullEnvelope = R.curry((collection, id) => {
+  return byId(collection, id).then(getIdFieldsEnvelope(collection))
+})
 
 const handlers = {
   byId,
@@ -61,6 +76,7 @@ module.exports = dbPromise.then((collection) => {
     byId: byId(collection),
     search: search(collection),
     ancestors: (id) => ancestors(collection, id),
-    getFull: getFull(collection)
+    getFull: getFull(collection),
+    getFullEnvelope: getFullEnvelope(collection)
   }
 })

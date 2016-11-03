@@ -28,6 +28,10 @@ handlerPromise.then((handlers) => {
     handleResponse(res, handlers.getFull(req.params.id))
   })
 
+  app.get("/element/:id/related", (req, res) => {
+    handleResponse(res, handlers.getFullEnvelope(req.params.id))
+  })
+
   app.get("/element/:id", (req, res) => {
     handleResponse(res, handlers.byId(req.params.id))
   })
