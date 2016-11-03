@@ -10,8 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "elasticlunr": "^0.9.5",
     "express": "^4.14.0",
+    "lodash.memoize": "^4.1.2",
+    "marked": "^0.3.6",
     "mongodb": "^2.2.11",
     "ramda": "^0.22.1"
   }

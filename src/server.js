@@ -1,5 +1,7 @@
 const express = require("express")
+const path = require("path")
 
+const render = require("./render")
 const handlerPromise = require("./db-handlers")
 const app = express()
 
@@ -12,31 +14,26 @@ const handleResponse = (res, promise) => {
   })
 }
 
+handlerPromise.then((handlers) => {
+  app.get("/element/:id/ancestors", (req, res) => {
+    handleResponse(res, handlers.ancestors(req.params.id))
+  })
 
-handlersPromise.then((handlers) => {
-  app.get("/id/:id", (req, res) => {
+  app.get("/element/:id/full", (req, res) => {
+    handleResponse(res, handlers.getFull(req.params.id))
+  })
+
+  app.get("/element/:id", (req, res) => {
     handleResponse(res, handlers.byId(req.params.id))
   })
 
-  app.get("/id/:id/parents", (req, res) => {
-    res.json(handlers.getParents(req.params.id))
+  app.get("/element", (req, res) => {
+    handleResponse(res, handlers.search(req.query))
   })
 
-  app.get("/search/:query", (req, res) => {
-    handleResponse(res, handlers.search(req.params.query))
+  app.get("/", (req, res) => {
+    res.send(render("home.md"))
   })
-
-  // app.get("/allkeys", (req, res) => {
-  //   res.json(handlers.allKeys())
-  // })
-  //
-  // app.get("/unique-key-values/:key", (req, res) => {
-  //   res.json(handlers.uniqueKeyValues(req.params.key))
-  // })
-  //
-  // app.get("/query/:key/:value", (req, res) => {
-  //   res.json(handlers.byKey(req.params.key, req.params.value))
-  // })
 
   app.listen(3000, () => {
     console.log("ISO20022 server listening on 3000")
