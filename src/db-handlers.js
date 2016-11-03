@@ -29,18 +29,20 @@ const ancestors = (collection, id, results = []) => {
 }
 
 const getIdFields = R.curry((collection, doc) => {
-  return R.compose(
-    (promises) => Promise.all(promises),
+  return R.composeP(
+    R.merge(doc),
+    R.mergeAll,
+    Promise.all.bind(Promise),
     R.map(([key, promise]) => promise.then(R.objOf(key))),
     R.toPairs,
     R.map((query) => collection.find(query).toArray()),
     R.map(R.assocPath(["xmi:id", "$in"], R.__, {})),
     R.map(R.split(" ")),
     R.filter((val) => val[0] === "_"),
-    R.omit(["xmi:id"])
+    R.omit(["xmi:id"]),
+    Promise.resolve.bind(Promise)
   )(doc)
-  .then(R.mergeAll)
-  .then(R.merge(doc))
+
 })
 
 const getFull = R.curry((collection, id) => {
